@@ -258,7 +258,7 @@ class _SignUpState extends State<SignUp> {
                           height: height / 46,
                         ),
                         CustomDropDownFormField<String>(
-                          items: ['user', 'doctor'].map((e) => DropdownMenuItem<String>(
+                          items: ['user', 'nurse'].map((e) => DropdownMenuItem<String>(
                             value: e,
                             child: Text(e),
                           )).toList(),

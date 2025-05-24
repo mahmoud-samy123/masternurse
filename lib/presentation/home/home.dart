@@ -8,6 +8,7 @@ import 'package:medical_app/presentation/LabTest/labtest.dart';
 import 'package:medical_app/presentation/Medicine/medcine.dart';
 import 'package:medical_app/presentation/home/model/Doctor.model.dart';
 import 'package:medical_app/const/colors.dart';
+import 'package:medical_app/presentation/home/model/nurse_model.dart';
 import 'package:medical_app/presentation/home/widget/topdoctorcontainer.dart';
 import 'package:medical_app/presentation/home/widget/home_collection.dart';
 import '../Body/list of body.dart';
@@ -111,57 +112,57 @@ class HomeScreen extends StatelessWidget {
                           textAlign: TextAlign.start,
                         ),
                       ),
-                      Row(
-                        children: [
-                          Collection(
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => const DoctorView(),
-                                ),
-                              );
-                            },
-                            displayText: S.of(context).find_doctor,
-                            svg: 'https://firebasestorage.googleapis.com/v0/b/medical-app-bfe86.appspot.com/o/collection%2FDoctor.svg?alt=media&token=43568163-d928-42be-a133-2b3e09b0c403',
-                          ),
-                          SizedBox(width: 0.0487 * width),
-                          Collection(
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => const ChooseTheBody(),
-                                ),
-                              );
-                            },
-                            displayText: S.of(context).check_yourself,
-                            svg: 'https://firebasestorage.googleapis.com/v0/b/medical-app-bfe86.appspot.com/o/collection%2FCheckyourself.svg?alt=media&token=7f32e254-09c2-4991-be0c-f95638bf2eba',
-                          ),
-                          SizedBox(width: 0.0487 * width),
-                          Collection(
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => const MainScreen(),
-                                ),
-                              );
-                            },
-                            displayText: S.of(context).LabTest,
-                            svg: 'https://firebasestorage.googleapis.com/v0/b/medical-app-bfe86.appspot.com/o/collection%2FVector.svg?alt=media&token=26d36e57-0a3f-4d49-a829-0dd74fb3a159',
-                          ),
-                          SizedBox(width: 0.0487 * width),
-                          Collection(
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) =>  Medicine(controller: searchController, searchQuery: '', localizationCubit: BlocProvider.of<LocalizationCubit>(context),),
-                                ),
-                              );
-                            },
-                            displayText: S.of(context).Medcine,
-                            svg: 'https://firebasestorage.googleapis.com/v0/b/medical-app-bfe86.appspot.com/o/collection%2FPharmacy.svg?alt=media&token=546152b8-0729-4a2c-b7db-1591e72808e0',
-                          ),
-                        ],
-                      ),
+                      // Row(
+                      //   children: [
+                      //     Collection(
+                      //       onTap: () {
+                      //         Navigator.of(context).push(
+                      //           MaterialPageRoute(
+                      //             builder: (context) => const DoctorView(),
+                      //           ),
+                      //         );
+                      //       },
+                      //       displayText: S.of(context).find_doctor,
+                      //       svg: 'https://firebasestorage.googleapis.com/v0/b/medical-app-bfe86.appspot.com/o/collection%2FDoctor.svg?alt=media&token=43568163-d928-42be-a133-2b3e09b0c403',
+                      //     ),
+                          // SizedBox(width: 0.0487 * width),
+                          // Collection(
+                          //   onTap: () {
+                          //     Navigator.of(context).push(
+                          //       MaterialPageRoute(
+                          //         builder: (context) => const ChooseTheBody(),
+                          //       ),
+                          //     );
+                          //   },
+                          //   displayText: S.of(context).check_yourself,
+                          //   svg: 'https://firebasestorage.googleapis.com/v0/b/medical-app-bfe86.appspot.com/o/collection%2FCheckyourself.svg?alt=media&token=7f32e254-09c2-4991-be0c-f95638bf2eba',
+                          // ),
+                          // SizedBox(width: 0.0487 * width),
+                          // Collection(
+                          //   onTap: () {
+                          //     Navigator.of(context).push(
+                          //       MaterialPageRoute(
+                          //         builder: (context) => const MainScreen(),
+                          //       ),
+                          //     );
+                          //   },
+                          //   displayText: S.of(context).LabTest,
+                          //   svg: 'https://firebasestorage.googleapis.com/v0/b/medical-app-bfe86.appspot.com/o/collection%2FVector.svg?alt=media&token=26d36e57-0a3f-4d49-a829-0dd74fb3a159',
+                          // ),
+                          // SizedBox(width: 0.0487 * width),
+                          // Collection(
+                          //   onTap: () {
+                          //     Navigator.of(context).push(
+                          //       MaterialPageRoute(
+                          //         builder: (context) =>  Medicine(controller: searchController, searchQuery: '', localizationCubit: BlocProvider.of<LocalizationCubit>(context),),
+                          //       ),
+                          //     );
+                          //   },
+                          //   displayText: S.of(context).Medcine,
+                          //   svg: 'https://firebasestorage.googleapis.com/v0/b/medical-app-bfe86.appspot.com/o/collection%2FPharmacy.svg?alt=media&token=546152b8-0729-4a2c-b7db-1591e72808e0',
+                          // ),
+                      //   ],
+                      // ),
                       SizedBox(height: 0.023 * height),
                       Container(
                         padding: const EdgeInsets.symmetric(vertical: 35, horizontal: 20),
@@ -182,7 +183,7 @@ class HomeScreen extends StatelessWidget {
                       Row(
                         children: [
                           Text(
-                            S.of(context).top_doctor,
+                            S.of(context).nurse,
                             style: GoogleFonts.inter(
                               fontWeight: FontWeight.w600,
                               fontSize: width < 500
@@ -221,33 +222,39 @@ class HomeScreen extends StatelessWidget {
                           itemCount: context.read<HomeCubit>().data.length,
                           scrollDirection: Axis.horizontal,
                           itemBuilder: (BuildContext context, int index) {
-                            Doctor doctor = context.read<HomeCubit>().data[index];
+                            Nurse nurse = context.read<HomeCubit>().data[index];
                             return TopDoctorContainer(
-                              photoUrl: doctor.photo,
-                              doctorname: doctor.name,
-                              category: doctor.category,
-                              rating: doctor.averageRating,
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => DoctorDetails(
-                                      photoUrl: doctor.photo,
-                                      doctorName: doctor.name,
-                                      category: doctor.category,
-                                      rating: doctor.averageRating,
-                                      address: doctor.address,
-                                      city: doctor.city,
-                                      government: doctor.government,
-                                      aboutUs: doctor.about,
-                                      times: doctor.time,
-                                      reservation: doctor.reservation,
-                                      email: doctor.email,
-                                    ),
+                              photoUrl: nurse.photo,
+                              doctorname: nurse.nameAr,
+                                city: nurse.cityEn, onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => DoctorDetails(nurse: nurse,
                                   ),
-                                );
-                              },
-                              city: doctor.city,
+                                ),
+                              );
+                            },
+                              // onTap: () {
+                              //   Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //       builder: (context) => DoctorDetails(
+                              //         photoUrl: doctor.photo,
+                              //         doctorName: doctor.name,
+                              //         category: doctor.category,
+                              //         rating: doctor.averageRating,
+                              //         address: doctor.address,
+                              //         city: doctor.city,
+                              //         government: doctor.government,
+                              //         aboutUs: doctor.about,
+                              //         times: doctor.time,
+                              //         reservation: doctor.reservation,
+                              //         email: doctor.email,
+                              //       ),
+                              //     ),
+                              //   );
+                              // },
                             );
                           },
                         ),

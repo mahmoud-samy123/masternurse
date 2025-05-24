@@ -72,17 +72,51 @@ class AuthCubit extends Cubit<AuthStates> {
         password: password,
       );
       emit(SignUpSuccess());
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userCredential.user!.uid)
-          .set({
-        'name': name,
-        'phone': phone,
-        'email': email,
-         kImage: '',
-        'userType': userType,
-        kAbout : about,
-      });
+      if(userType=="nurse"){
+        await FirebaseFirestore.instance
+            .collection('nurse')
+            .doc(userCredential.user!.uid)
+            .set({
+          "id":userCredential.user!.uid,
+          'name_en': name,
+          "name_ar":name,
+          'phone': phone,
+          'email': email,
+          "city_ar":"القاهرة",
+          "city_en":"Cairo",
+          "services":[],
+          kImage: '',
+          'userType': userType,
+          kAbout : about,
+        });
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userCredential.user!.uid)
+            .set({
+          'name': name,
+          'phone': phone,
+          'email': email,
+          kImage: '',
+          'userType': userType,
+          kAbout : about,
+        });
+
+      }
+      else{
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userCredential.user!.uid)
+            .set({
+          'name': name,
+          'phone': phone,
+          'email': email,
+          kImage: '',
+          'userType': userType,
+          kAbout : about,
+        });
+
+      }
+
     } on FirebaseAuthException catch (ex) {
       if (ex.code == 'weak-password') {
         emit(SignUpFailed(

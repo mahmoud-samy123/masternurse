@@ -59,7 +59,7 @@ class UserModel {
       kOnline : online,
       kLastActivated : lastActivated,
       kPhone:Mobilephone,
-      kIsDoctor : isDoctor,
+      kIsDoctor : isDoctor??true,
     };
   }
 }

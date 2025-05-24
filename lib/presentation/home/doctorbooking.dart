@@ -72,11 +72,7 @@ class _DoctorBookingState extends State<DoctorBooking> {
                 DoctorDetailsContainer2(
                   photoUrl: widget.photoUrl,
                   doctorName: widget.name,
-                  category: widget.category,
-                  rating: widget.rating,
-                  address: widget.address,
                   city: widget.city,
-                  government: widget.government,
                 ),
                 SizedBox(height: 0.0115340253748558 * height),
                 Row(

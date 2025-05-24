@@ -38,13 +38,9 @@ import 'generated/l10n.dart';
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  await Future.delayed(
-    const Duration(seconds: 0),
-  );
+  await Future.delayed(const Duration(seconds: 0));
   FlutterNativeSplash.remove();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   Bloc.observer = SimpleBlocObserver();
   sharedPreferences = await SharedPreferences.getInstance();
@@ -75,36 +71,28 @@ class MyApp extends StatelessWidget {
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (context) => BottomCubit()..screens,
-        ),
-        BlocProvider(
-          create: (context) => AuthCubit(),
-        ),
+        BlocProvider(create: (context) => BottomCubit()..screens),
+        BlocProvider(create: (context) => AuthCubit()),
         BlocProvider(
           create: (context) => InternetBloc()..add(InternetChecked()),
         ),
         BlocProvider(
-          create: (context) => LocalizationCubit()
-            ..appLanguage(LanguageEventEnums.initialLanguage),
+          create: (context) =>
+              LocalizationCubit()
+                ..appLanguage(LanguageEventEnums.initialLanguage),
         ),
-        BlocProvider(
-          create: (context) => HomeCubit()..data,
-        ),
+        BlocProvider(create: (context) => HomeCubit()..data),
         BlocProvider(
           create: (context) => BodyCubit()
             ..bodydata
             ..getdataname,
-        ), BlocProvider(
-          create: (context) => SearchCubit()
-            ..searchList,
         ),
+        BlocProvider(create: (context) => SearchCubit()..searchList),
         BlocProvider(
           create: (context) => MedicineCubit()
             ..drugDetails
             ..drugs,
         ),
-
       ],
       child: BlocBuilder<LocalizationCubit, LocalizationState>(
         builder: (context, langState) {
@@ -121,10 +109,7 @@ class MyApp extends StatelessWidget {
                   statusBarIconBrightness: Brightness.dark,
                 ),
                 backgroundColor: Colors.white,
-
-
               ),
-
             ),
             locale: locale,
             supportedLocales: S.delegate.supportedLocales,
@@ -134,15 +119,13 @@ class MyApp extends StatelessWidget {
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
             ],
-            localeResolutionCallback: (deviceLocale, supportedLocales) {
-              for (var locale in supportedLocales) {
-                if (deviceLocale != null) {
-                  if (deviceLocale.languageCode == locale.languageCode) {
-                    return deviceLocale;
-                  }
+            localeResolutionCallback: (locale, supportedLocales) {
+              for (var supportedLocale in supportedLocales) {
+                if (locale != null && locale.languageCode == supportedLocale.languageCode) {
+                  return supportedLocale;
                 }
               }
-              return supportedLocales.first;
+              return const Locale('en');
             },
             debugShowCheckedModeBanner: false,
             initialRoute: SplashScreen.id,

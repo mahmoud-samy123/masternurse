@@ -2,6 +2,8 @@ import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:medical_app/presentation/home/model/Doctor.model.dart';
 
+import '../model/nurse_model.dart';
+
 part 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
@@ -9,7 +11,7 @@ class HomeCubit extends Cubit<HomeState> {
 
 
   HomeCubit() : super(HomeInitial());
-  List<Doctor> data= [];
+  List<Nurse> data= [];
   fetchHomeData() async {
 
     try {
@@ -18,13 +20,13 @@ class HomeCubit extends Cubit<HomeState> {
       //
       // Fetch data from Firestore
       CollectionReference doctor =
-      FirebaseFirestore.instance.collection("Doctor");
+      FirebaseFirestore.instance.collection("nurse");
       QuerySnapshot doctorData =
-      await doctor.orderBy("Rating", descending: true).get();
+      await doctor.get();
       data.clear();
 
       for (var element in doctorData.docs) {
-        data.add(Doctor.fromJson(element.data()as Map<String, dynamic>));
+        data.add(Nurse.fromJson(element.data()as Map<String, dynamic>));
       }
 
       emit(TopdoctorHomeSuccefully());

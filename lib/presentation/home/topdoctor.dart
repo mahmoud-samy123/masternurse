@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:medical_app/const/colors.dart';
+import 'package:medical_app/presentation/home/model/nurse_model.dart';
+import 'package:medical_app/presentation/home/widget/doctordetailscontainer2.dart';
 import 'package:medical_app/presentation/home/widget/topdoctorcontainer2.dart';
 import '../../../generated/l10n.dart';
 import 'home_cubit/home_cubit.dart';
@@ -26,7 +28,7 @@ class TopDoctor extends StatelessWidget {
         if (state is TopdoctorHomeloading) {
           return const Center(child: CircularProgressIndicator());
         }
-        if (state is TopdoctorHomeSuccefully){
+        if (state is TopdoctorHomeSuccefully) {
           return Scaffold(
             appBar: AppBar(
               leading: GestureDetector(
@@ -37,7 +39,7 @@ class TopDoctor extends StatelessWidget {
               ),
               centerTitle: true,
               title: Text(
-                S.of(context).top_doctor,
+                S.of(context).nurse,
                 style: GoogleFonts.inter(
                   fontWeight: FontWeight.w600,
                   fontSize: 0.0535279805352798 * width,
@@ -51,40 +53,31 @@ class TopDoctor extends StatelessWidget {
                 child: Column(
                   children: [
                     SizedBox(
-                      height: height * 0.3, // Adjust the height as needed
+                      height: height , // Adjust the height as needed
                       child: ListView.builder(
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: context.read<HomeCubit>().data.length,
                         scrollDirection: Axis.vertical,
                         shrinkWrap: true,
                         itemBuilder: (BuildContext context, index) {
-                          Doctor doctor=context.read<HomeCubit>().data[index];
+                          Nurse nurse = context.read<HomeCubit>().data[index];
 
-                          return TopDoctorContainer2(
-                            photoUrl:doctor.photo,
-                            doctorName:doctor.name,
-                            category: doctor.category,
-                            rating: doctor.averageRating,
-                            address: doctor.address,
-                            city: doctor.city,
-                            onTap: () {
+                          return GestureDetector(
+                           onTap: (){
+                             Navigator.push(
+                               context,
+                               MaterialPageRoute(
+                                 builder: (context) => DoctorDetails(nurse: nurse,
+                                 ),
+                               ),
+                             );
+                           },
+                            child: DoctorDetailsContainer2(
+                              photoUrl: nurse.photo,
+                              doctorName: nurse.nameAr,
+                              city: nurse.cityEn,
 
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => DoctorDetails(
-                                    photoUrl: doctor.photo,
-                                    doctorName: doctor.name,
-                                    category: doctor.category,
-
-                                    address: doctor.address,
-                                    city: doctor.city,
-                                    government: doctor.government,
-                                    aboutUs: doctor.about, times:doctor.time,  reservation: doctor.reservation, email: doctor.email, rating:  doctor.averageRating,
-                                  ),
-                                ),
-                              );
-                            },
+                            ),
                           );
                         },
                       ),

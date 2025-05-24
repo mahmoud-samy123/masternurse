@@ -61,11 +61,9 @@ class _ChatState extends State<Chat> {
                   if(state){
                     return CustomIconButton(
                       onPressed: () {
-                        if (userModel.isDoctor!) {
-                          setState(() {
-                            isVisible = !isVisible;
-                          });
-                        }
+                        setState(() {
+                          isVisible = !isVisible;
+                        });
                       },
                       icon: isVisible
                           ? const Icon(
@@ -86,8 +84,7 @@ class _ChatState extends State<Chat> {
             ],
           ),
           Container(
-            child: isVisible
-                ? Padding(
+            child: Padding(
                     padding: const EdgeInsets.symmetric(
                       vertical: 10,
                       horizontal: 10,
@@ -103,7 +100,6 @@ class _ChatState extends State<Chat> {
                           onPressed: () {
                             setState(() {
                               FireChat().isDoctor;
-                              //print('llll ${userModel1!.isDoctor}');
                             });
                             if (searchController.text != '') {
                               FireChat()
@@ -124,9 +120,7 @@ class _ChatState extends State<Chat> {
                       ],
                     ),
                   )
-                : SizedBox(
-                    height: height * 0.02113821138211382,
-                  ),
+
           ),
           Expanded(
             child: BlocBuilder<InternetBloc, InternetState>(

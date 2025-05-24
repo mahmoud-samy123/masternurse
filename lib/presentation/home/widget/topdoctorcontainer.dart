@@ -5,8 +5,6 @@ import 'package:medical_app/const/colors.dart';
 class TopDoctorContainer extends StatefulWidget {
   final String photoUrl;
   final String doctorname;
-  final String category;
-  final double rating;
   final String city;
   final void Function()? onTap;
 
@@ -14,8 +12,6 @@ class TopDoctorContainer extends StatefulWidget {
     super.key,
     required this.photoUrl,
     required this.doctorname,
-    required this.category,
-    required this.rating,
     required this.onTap, required this.city,
   });
 
@@ -45,10 +41,12 @@ class _TopDoctorContainerState extends State<TopDoctorContainer> {
               const SizedBox(
                 height:10,
               ),
-              CircleAvatar(
-                radius:35.50000000000002,
-                backgroundImage: NetworkImage(widget.photoUrl),
-              ),
+       Center(
+         child:        CircleAvatar(
+           radius:35.50000000000002,
+           backgroundImage: NetworkImage(widget.photoUrl),
+         ),
+       ),
 
               const SizedBox(
                 height: 10,
@@ -73,26 +71,7 @@ class _TopDoctorContainerState extends State<TopDoctorContainer> {
                   ),
                 ],
               ),
-              Row(
-                children: [
-                  const SizedBox(
-                    width: 5,
-                  ),
-                  Flexible( // Wrap with Flexible
-                    child: Text(
-                      widget.category,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                      style: GoogleFonts.inter(
-                        color: AppColor.ratingColor,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 10,
-                      ),
-                      textAlign: TextAlign.start,
-                    ),
-                  ),
-                ],
-              ),
+
               const SizedBox(
                 height: 5,
               ),
@@ -101,28 +80,6 @@ class _TopDoctorContainerState extends State<TopDoctorContainer> {
                 children: [
                   const SizedBox(
                     width:5,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      color: AppColor.kColorCircle,
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.star,
-                          color: AppColor.kPrimaryColor1,
-                          size: 15,
-                        ),
-                        Text(
-                          "${widget.rating}",
-                          style: GoogleFonts.inter(
-                            fontSize:7.999999999999999,
-                            color: AppColor.kPrimaryColor1,
-                          ),
-                        ),
-                      ],
-                    ),
                   ),
                   const SizedBox(
                     width: 0.9999999999999999,

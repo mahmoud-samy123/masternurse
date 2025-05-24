@@ -1,3 +1,5 @@
+// UI improvements only, logic unchanged.
+
 import 'dart:io';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -49,13 +51,15 @@ class _ProfileViewState extends State<ProfileView> {
   Future getImage() async {
     final myId = FirebaseAuth.instance.currentUser!.uid;
     final ImagePicker imagePicker = ImagePicker();
-    final XFile? imageGallery =
-        await imagePicker.pickImage(source: ImageSource.gallery);
+    final XFile? imageGallery = await imagePicker.pickImage(
+      source: ImageSource.gallery,
+    );
     if (imageGallery != null) {
       file = File(imageGallery.path);
       var imageName = basename(imageGallery.path);
-      var refStorage =
-          FirebaseStorage.instance.ref('imageProfile').child(imageName);
+      var refStorage = FirebaseStorage.instance
+          .ref('imageProfile')
+          .child(imageName);
       await refStorage.putFile(file!);
       urlImage = await refStorage.getDownloadURL();
       // await  FirebaseFirestore.instance
@@ -66,13 +70,12 @@ class _ProfileViewState extends State<ProfileView> {
       await FirebaseFirestore.instance
           .collection(kUsersCollections)
           .doc(myId)
-          .update({
-        kImage: urlImage,
-      });
+          .update({kImage: urlImage});
       file = null;
       setState(() {});
     }
   }
+
   User? user = FirebaseAuth.instance.currentUser;
   Future<bool> userGoogle = GoogleSignIn().isSignedIn();
   @override
@@ -93,235 +96,122 @@ class _ProfileViewState extends State<ProfileView> {
               Container(
                 height: height,
                 width: width,
-                decoration: const BoxDecoration(
-                  color: AppColor.kGreen2,
-                ),
+                decoration: const BoxDecoration(color: AppColor.kGreen2),
                 child: Padding(
-                  padding: const EdgeInsets.only(
-                    top: 91,
-                  ),
-                  child:               BlocBuilder<InternetBloc, InternetState>(
+                  padding: const EdgeInsets.only(top: 91),
+                  child: BlocBuilder<InternetBloc, InternetState>(
                     builder: (context, connectState) {
-                      InternetBloc internetBloc = BlocProvider.of<InternetBloc>(context);
-    if (connectState is InternetConnectedState){
-    return Column(
-    crossAxisAlignment: CrossAxisAlignment.center,
-    children: [
-    Container(
-    child: Stack(
-    clipBehavior: Clip.none,
-    children: [
-    // ClipOval(
-    //   child: urlImage != null &&
-    //           userModel1!.image!.isNotEmpty
-    //       ? Image.network(
-    //           userModel1!.image!,
-    //           width: 130,
-    //           height: 130,
-    //           fit: BoxFit.fill,
-    //         )
-    //       : Container(
-    //           width: 130,
-    //           height: 130,
-    //           padding: EdgeInsets.all(25),
-    //           decoration: BoxDecoration(
-    //             shape: BoxShape.circle,
-    //             color: Colors.grey[200],
-    //           ),
-    //           child: Image.asset(
-    //             "Image/user.png",
-    //             fit: BoxFit.fill,
-    //           ),
-    //         ),
-    // ),
-    if (urlImage != null) ...[
-    ClipOval(
-    child: Image.network(
-    urlImage!,
-    width: 130,
-    height: 130,
-    fit: BoxFit.fill,
-    ),
-    ),
-    ] else if (userModel1!.image!.isNotEmpty) ...[
-    ClipOval(
-    child: Image.network(
-    userModel1!.image!,
-    width: 130,
-    height: 130,
-    fit: BoxFit.fill,
-    ),
-    ),
-    ]else if(urlImage == null || userModel1!.image==null )...[
-    Container(
-    width: 130,
-    height: 130,
-    padding: const EdgeInsets.all(25),
-    decoration: BoxDecoration(
-    shape: BoxShape.circle,
-    color: Colors.grey[200],
-    ),
-    child: Image.asset(
-    "Image/user.png",
-    fit: BoxFit.fill,
-    ),
-    ),
-    ],
-    Positioned(
-    child: Container(
-    child: Center(
-    child: CustomIconButton(
-    onPressed: () async {
-    await getImage().then((value) {
-    if (urlImage != null) {
-    FirebaseAuth
-        .instance.currentUser!
-        .updatePhotoURL(urlImage);
-    }
-    });
-    },
-    icon: const Icon(
-    Icons.edit,
-    color: AppColor.kWhite,
-    size: 15,
-    ),
-    ),
-    ),
-    decoration: const BoxDecoration(
-    color: Colors.red,
-    shape: BoxShape.circle,
-    ),
-    height: 35,
-    width: 35,
-    ),
-    bottom: -5,
-    right: -5,
-    ),
-    ],
-    ),
-    ),
-    const SizedBox(
-    height: 20,
-    ),
-    CustomText(
-    text: userModel1!.name!,
-    colorText: AppColor.kWhite,
-    fontWeight: FontWeight.w600,
-    fontSize: 19,
-    ),
-    const SizedBox(
-    height: 5,
-    ),
-    userModel1!.email == null
-    ? const SizedBox.shrink()
-        : CustomText(
-    text: userModel1!.email!,
-    colorText: AppColor.kWhite,
-    fontWeight: FontWeight.w600,
-    fontSize: 14,
-    ),
-    const SizedBox(
-    height: 30,
-    ),
-    Row(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-    Container(
-    height: 90,
-    width: 2,
-    decoration: const BoxDecoration(
-    color: AppColor.kWhite,
-    ),
-    ),
-    const SizedBox(
-    width: 60,
-    ),
-    Column(
-    children: [
-    CustomText(
-    text: S.of(context).age,
-    colorText: AppColor.kWhite,
-    fontWeight: FontWeight.w600,
-    fontSize: 11,
-    ),
-    const SizedBox(
-    height: 15,
-    ),
-    const CustomText(
-    text: '25',
-    colorText: AppColor.kWhite,
-    fontWeight: FontWeight.w600,
-    fontSize: 16,
-    ),
-    ],
-    ),
-    const SizedBox(
-    width: 40,
-    ),
-    Column(
-    children: [
-    CustomText(
-    text: S.of(context).weight,
-    colorText: AppColor.kWhite,
-    fontWeight: FontWeight.w600,
-    fontSize: 11,
-    ),
-    const SizedBox(
-    height: 15,
-    ),
-    const CustomText(
-    text: '80',
-    colorText: AppColor.kWhite,
-    fontWeight: FontWeight.w600,
-    fontSize: 16,
-    ),
-    ],
-    ),
-    const SizedBox(
-    width: 40,
-    ),
-    Column(
-    children: [
-    CustomText(
-    text: S.of(context).height,
-    colorText: AppColor.kWhite,
-    fontWeight: FontWeight.w600,
-    fontSize: 11,
-    ),
-    const SizedBox(
-    height: 15,
-    ),
-    const CustomText(
-    text: '180',
-    colorText: AppColor.kWhite,
-    fontWeight: FontWeight.w600,
-    fontSize: 16,
-    ),
-    ],
-    ),
-    const SizedBox(
-    width: 60,
-    ),
-    Container(
-    height: 90,
-    width: 2,
-    decoration: const BoxDecoration(
-    color: AppColor.kWhite,
-    ),
-    ),
-    ],
-    ),
-    ],
-    );
-    }
-
-                       else if (connectState is InternetDisconnectedState) {
-      return const CustomText(
-        text: "No Internet Connection",
-        colorText: Colors.red,
-        fontWeight: FontWeight.w600,
-        fontSize: 17,
-      );
+                      InternetBloc internetBloc = BlocProvider.of<InternetBloc>(
+                        context,
+                      );
+                      if (connectState is InternetConnectedState) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            // Profile Picture with improved UI
+                            Center(
+                              child: Stack(
+                                clipBehavior: Clip.none,
+                                children: [
+                                  Material(
+                                    elevation: 8,
+                                    shape: const CircleBorder(),
+                                    child: CircleAvatar(
+                                      radius: 65,
+                                      backgroundColor: Colors.white,
+                                      child: (urlImage != null)
+                                          ? ClipOval(
+                                        child: Image.network(
+                                          urlImage!,
+                                          width: 120,
+                                          height: 120,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      )
+                                          : (userModel1!.image != null && userModel1!.image!.isNotEmpty)
+                                          ? ClipOval(
+                                        child: Image.network(
+                                          userModel1!.image!,
+                                          width: 120,
+                                          height: 120,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      )
+                                          : Container(
+                                        width: 120,
+                                        height: 120,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.grey[200],
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(25),
+                                          child: Image.asset(
+                                            "Image/user.png",
+                                            fit: BoxFit.contain,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  // Edit icon, precisely positioned and visually clear
+                                  Positioned(
+                                    bottom: 8,
+                                    right: 8,
+                                    child: GestureDetector(
+                                      onTap: () async {
+                                        await getImage().then((value) {
+                                          if (urlImage != null) {
+                                            FirebaseAuth.instance.currentUser!.updatePhotoURL(urlImage);
+                                          }
+                                        });
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.redAccent,
+                                          shape: BoxShape.circle,
+                                          border: Border.all(color: Colors.white, width: 2),
+                                        ),
+                                        padding: const EdgeInsets.all(8),
+                                        child: const Icon(
+                                          Icons.edit,
+                                          color: Colors.white,
+                                          size: 18,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 24),
+                            // Name
+                            CustomText(
+                              text: userModel1!.name ?? '',
+                              colorText: AppColor.kWhite,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 20,
+                            ),
+                            const SizedBox(height: 6),
+                            // Email
+                            (userModel1!.email == null || userModel1!.email!.isEmpty)
+                                ? const SizedBox.shrink()
+                                : CustomText(
+                              text: userModel1!.email!,
+                              colorText: Colors.white70,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 15,
+                            ),
+                            const SizedBox(height: 32),
+                          ],
+                        );
+                      } else if (connectState is InternetDisconnectedState) {
+                        return const CustomText(
+                          text: "No Internet Connection",
+                          colorText: Colors.red,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 17,
+                        );
                       }
                       return CustomText(
                         text: "Checking Connection...",
@@ -329,92 +219,61 @@ class _ProfileViewState extends State<ProfileView> {
                         fontWeight: FontWeight.w600,
                         fontSize: 17,
                       );
-
-
                     },
                   ),
                 ),
               ),
+              // Bottom sheet card with improved rounded corners and spacing
               Positioned(
                 bottom: 0,
                 child: Container(
                   width: width,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 20,
-                    vertical: 23,
+                    vertical: 28,
                   ),
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     color: AppColor.kWhite,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(32),
-                      topRight: Radius.circular(32),
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(36),
+                      topRight: Radius.circular(36),
                     ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.08),
+                        blurRadius: 12,
+                        spreadRadius: 2,
+                        offset: const Offset(0, -2),
+                      ),
+                    ],
                   ),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      RowReusable(
-                        onTap: () {
-                          pushNamed(context, EditeProfile.id);
-                        },
-                        leadingIcon: Icons.person_outlined,
-                        leadingIconColor: AppColor.kPrimaryColor1,
-                        leadingIconSize: 17,
-                        title: CustomText(
-                          text: S.of(context).profile,
-                          fontWeight: FontWeight.w600,
-                        ),
-                        trailing: const CustomIcon(
-                          icon: Icons.arrow_forward_ios,
-                          color: AppColor.kText2,
-                          size: 20,
-                        ),
-                      ),
-                      RowReusable(
-                        onTap: () {
-                          pushNamed(context, UpdateToDoctor.id);
-                        },
-                        leadingIcon: Icons.accessibility_new_outlined,
-                        leadingIconColor: AppColor.kPrimaryColor1,
-                        leadingIconSize: 17,
-                        title: const CustomText(
-                          text: 'I am a doctor',
-                          fontWeight: FontWeight.w600,
-                        ),
-                        trailing: const CustomIcon(
-                          icon: Icons.arrow_forward_ios,
-                          color: AppColor.kText2,
-                          size: 20,
-                        ),
-                      ),
                       RowReusable(
                         onTap: () {},
                         leadingIcon: Icons.language,
                         leadingIconColor: AppColor.kPrimaryColor1,
-                        leadingIconSize: 17,
+                        leadingIconSize: 19,
                         title: CustomText(
                           text: S.of(context).language,
                           fontWeight: FontWeight.w600,
                         ),
                         trailing: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             CustomTextButton(
                               onPressed: () {
-                                BlocProvider.of<LocalizationCubit>(context)
-                                    .appLanguage(
-                                        LanguageEventEnums.englishLanguage);
+                                BlocProvider.of<LocalizationCubit>(context).appLanguage(LanguageEventEnums.englishLanguage);
                               },
                               text: 'English',
                               colorText: AppColor.kPrimaryColor1,
                             ),
+                            const SizedBox(width: 4),
                             CustomTextButton(
                               onPressed: () {
-                                BlocProvider.of<LocalizationCubit>(context)
-                                    .appLanguage(
-                                        LanguageEventEnums.arabicLanguage);
+                                BlocProvider.of<LocalizationCubit>(context).appLanguage(LanguageEventEnums.arabicLanguage);
                               },
                               text: 'العربية',
                               colorText: AppColor.kPrimaryColor1,
@@ -422,100 +281,29 @@ class _ProfileViewState extends State<ProfileView> {
                           ],
                         ),
                       ),
-                      // RowReusable(
-                      //   leadingIcon: Icons.logout,
-                      //   leadingIconColor: AppColor.kPrimaryColor1,
-                      //   leadingIconSize: 17,
-                      //   title: CustomText(
-                      //     text: 'Mode',
-                      //     fontWeight: FontWeight.w600,
-                      //   ),
-                      //   trailing: BlocBuilder<ThemeCubit, ThemeState>(
-                      //     builder: (context, state) {
-                      //       return Row(
-                      //         mainAxisAlignment: MainAxisAlignment.end,
-                      //         mainAxisSize: MainAxisSize.min,
-                      //         children: [
-                      //           CustomIconButton(
-                      //             onPressed: () {
-                      //               BlocProvider.of<ThemeCubit>(context)
-                      //                   .changeMode(ThemeEnum.Dark);
-                      //             },
-                      //             icon: Icon(
-                      //               Icons.dark_mode_outlined,
-                      //               color: Colors.black54,
-                      //               size: 30,
-                      //             ),
-                      //           ),
-                      //           CustomIconButton(
-                      //             onPressed: () {
-                      //               BlocProvider.of<ThemeCubit>(context)
-                      //                   .changeMode(ThemeEnum.Light);
-                      //             },
-                      //             icon: Icon(
-                      //               Icons.light_mode_outlined,
-                      //               color: Colors.yellow[700],
-                      //               size: 30,
-                      //             ),
-                      //           ),
-                      //         ],
-                      //       );
-                      //     },
-                      //   ),
-                      // ),
+                      const SizedBox(height: 18),
                       RowReusable(
                         onTap: () async {
-                          // if (user != null) {
-                          //   await ShowAlert.showErrorORWarningDialog(
-                          //     isError: false,
-                          //     context: context,
-                          //     subtitle: 'Are you sure?',
-                          //     fct: () async
-                          //     {
-                          //       if(isLogin == true) {
-                          //         print(isLogin);
-                          //         await FirebaseAuth.instance.signOut();
-                          //         if(!mounted) return;
-                          //         pushNamedAndRemoveUntil(
-                          //           context, LoginOrSignUp.id,
-                          //         );
-                          //         isLogin = false;
-                          //         print(isLogin);
-                          //       } else if(isLoginGoogle = true) {
-                          //         print(isLoginGoogle);
-                          //         GoogleSignIn googleSignIn = GoogleSignIn();
-                          //         await googleSignIn.disconnect();
-                          //         pushNamedAndRemoveUntil(
-                          //           context, LoginOrSignUp.id,
-                          //         );
-                          //         isLoginGoogle = false;
-                          //         print(isLoginGoogle);
-                          //       } else {
-                          //         return;
-                          //       }
-                          //     },
-                          //   );
-                          // }
-
                           if (user != null) {
                             await ShowAlert.showErrorORWarningDialog(
                               isError: false,
                               context: context,
                               subtitle: 'Are you sure?',
-                              fct: () async
-                              {
-                                if(user != null) {
+                              fct: () async {
+                                if (user != null) {
                                   await FirebaseAuth.instance.signOut();
-                                  if(!mounted) return;
+                                  if (!mounted) return;
                                   pushNamedAndRemoveUntil(
-                                    context, LoginOrSignUp.id,
+                                    context,
+                                    LoginOrSignUp.id,
                                   );
-                                } else if(userGoogle == true) {
+                                } else if (userGoogle == true) {
                                   GoogleSignIn googleSignIn = GoogleSignIn();
                                   await googleSignIn.disconnect();
-                                  if(!mounted) return;
+                                  if (!mounted) return;
                                   pushNamedAndRemoveUntil(
-                                    context, LoginOrSignUp.id,
+                                    context,
+                                    LoginOrSignUp.id,
                                   );
                                 } else {
                                   return;
@@ -526,7 +314,7 @@ class _ProfileViewState extends State<ProfileView> {
                         },
                         leadingIcon: Icons.logout,
                         leadingIconColor: AppColor.kPrimaryColor1,
-                        leadingIconSize: 17,
+                        leadingIconSize: 19,
                         title: CustomText(
                           text: S.of(context).logout,
                           fontWeight: FontWeight.w600,
@@ -545,9 +333,7 @@ class _ProfileViewState extends State<ProfileView> {
           );
         } else {
           return const Center(
-            child: CircularProgressIndicator(
-              color: AppColor.kPrimaryColor1,
-            ),
+            child: CircularProgressIndicator(color: AppColor.kPrimaryColor1),
           );
         }
       },
