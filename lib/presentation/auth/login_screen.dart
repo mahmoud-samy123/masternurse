@@ -11,6 +11,7 @@ import '../../../cubits/connection/connection_cubit.dart';
 import '../../../generated/l10n.dart';
 import '../../app/style/Custom_appbar.dart';
 import '../../app/style/custom_button.dart';
+import '../../app/style/custom_drop_down_menu.dart';
 import '../../app/style/custom_icon.dart';
 import '../../app/style/custom_icon_button.dart';
 import '../../app/style/custom_text.dart';
@@ -19,6 +20,7 @@ import '../../app/style/show_alert_dialog.dart';
 import '../../app/style/custom_row_button.dart';
 import '../../cubits/connection/connection_state.dart';
 import '../Bottom/bottom.dart';
+import '../Bottom/bottom_nav_docotor.dart';
 import 'auth_cubit/auth_cubit.dart';
 import 'auth_cubit/auth_states.dart';
 import 'forgot_password.dart';
@@ -27,11 +29,17 @@ GlobalKey<FormState> formFieldLogin = GlobalKey();
 final emailLoginController = TextEditingController();
 final passwordLoginController = TextEditingController();
 
-class Login extends StatelessWidget {
+class Login extends StatefulWidget {
   const Login({super.key});
   static String id = 'Login screen';
 
   @override
+  State<Login> createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
+  String usertype = "user"; // <-- Move here!
+
   Widget build(BuildContext context) {
     bool isLoading = false;
     AuthCubit cubit = BlocProvider.of<AuthCubit>(context);
@@ -45,16 +53,15 @@ class Login extends StatelessWidget {
           //     color: AppColor.kPrimaryColor1,),
           // );
           isLoading = true;
-        } else if (state is LoginSuccess) {
+        } else if (state is LoginSuccess&&usertype == 'user' ) {
           showDialog(
             context: context,
             builder: (context) {
               return ShowAlertDialog(
                 onTap: () {
-                  pushNamedAndRemoveUntil(
-                    context,
-                    Bottombar.id,
-                  );
+
+                    Navigator.pushReplacementNamed(context, Bottombar.id);
+
                 },
                 text1: S.of(context).welcome_back,
                 text2: S.of(context).once_again,
@@ -70,7 +77,39 @@ class Login extends StatelessWidget {
             },
           );
           isLoading = false;
-        } else if (state is LoginFailedState) {
+        }
+        else if (state is LoginSuccess&&usertype == 'nurse' ) {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return ShowAlertDialog(
+                onTap: () {
+
+                    Navigator.pushReplacementNamed(context, BottomNavDocotor.id);
+
+
+
+
+
+
+                },
+                text1: S.of(context).welcome_back,
+                text2: S.of(context).once_again,
+                heightButton: height / 12,
+                textButton: S.of(context).go_to_home,
+                widthButton: width / 2,
+                widget: CustomIcon(
+                  icon: Icons.done,
+                  color: AppColor.kPrimaryColor1,
+                  size: width / 5,
+                ),
+              );
+            },
+          );
+          isLoading = false;
+        }
+
+        else if (state is LoginFailedState) {
           isLoading = false;
           showDialog(
               context: context,
@@ -93,7 +132,12 @@ class Login extends StatelessWidget {
                 );
               });
         } else if (state is GoogleLoginSuccess) {
-          Navigator.pushReplacementNamed(context, Bottombar.id);
+          if (usertype == 'user') {
+            Navigator.pushReplacementNamed(context, Bottombar.id);
+          } else {
+            Navigator.pushReplacementNamed(context, BottomNavDocotor.id);
+          }
+
         }
       },
       builder: (context, state) {
@@ -202,6 +246,23 @@ class Login extends StatelessWidget {
                           },
                         ),
                         SizedBox(
+                          height: height / 46,
+                        ),
+                        CustomDropDownFormField<String>(
+                          items: ['user', 'nurse'].map((e) => DropdownMenuItem<String>(
+                            value: e,
+                            child: Text(e),
+                          )).toList(),
+                          hintText: 'user',
+                          value: usertype,
+                          onChanged: (val) {
+                            setState(() {
+                              usertype = val!;
+                              print(usertype);
+                            });
+                          },
+                        ),
+                        SizedBox(
                           height: height / 60,
                         ),
                         Row(
@@ -281,56 +342,56 @@ class Login extends StatelessWidget {
                             ),
                           ],
                         ),
-                        SizedBox(
-                          height: height / 27,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              height: width / 350,
-                              width: width / 2.8,
-                              decoration: const BoxDecoration(
-                                color: AppColor.kText3,
-                              ),
-                            ),
-                            CustomText(
-                              text: '  OR  ',
-                              colorText: AppColor.kText3,
-                              fontSize: width / 23,
-                              fontWeight: FontWeight.w400,
-                            ),
-                            Container(
-                              height: width / 350,
-                              width: width / 2.8,
-                              decoration: const BoxDecoration(
-                                color: AppColor.kText3,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: height / 28,
-                        ),
-                        CustomRowButton(
-                          onTap: () {
-                            cubit.signInWithGoogle(context: context);
-                          },
-                          height: height / 12,
-                          width: width / 1,
-                          borderRadius: BorderRadius.circular(32),
-                          border: Border.all(
-                            color: AppColor.kText3,
-                          ),
-                          pathImage: 'Image/google.png',
-                          heightImage: height / 28,
-                          widthImage: width / 17,
-                          text: 'Sign in with Google',
-                          color: AppColor.kWhite,
-                          colorText: AppColor.kText1,
-                          fontSize: width / 21.5,
-                          fontWeight: FontWeight.w600,
-                        ),
+                        // SizedBox(
+                        //   height: height / 27,
+                        // ),
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.center,
+                        //   children: [
+                        //     Container(
+                        //       height: width / 350,
+                        //       width: width / 2.8,
+                        //       decoration: const BoxDecoration(
+                        //         color: AppColor.kText3,
+                        //       ),
+                        //     ),
+                        //     CustomText(
+                        //       text: '  OR  ',
+                        //       colorText: AppColor.kText3,
+                        //       fontSize: width / 23,
+                        //       fontWeight: FontWeight.w400,
+                        //     ),
+                        //     Container(
+                        //       height: width / 350,
+                        //       width: width / 2.8,
+                        //       decoration: const BoxDecoration(
+                        //         color: AppColor.kText3,
+                        //       ),
+                        //     ),
+                        //   ],
+                        // ),
+                        // SizedBox(
+                        //   height: height / 28,
+                        // ),
+                        // CustomRowButton(
+                        //   onTap: () {
+                        //     cubit.signInWithGoogle(context: context);
+                        //   },
+                        //   height: height / 12,
+                        //   width: width / 1,
+                        //   borderRadius: BorderRadius.circular(32),
+                        //   border: Border.all(
+                        //     color: AppColor.kText3,
+                        //   ),
+                        //   pathImage: 'Image/google.png',
+                        //   heightImage: height / 28,
+                        //   widthImage: width / 17,
+                        //   text: 'Sign in with Google',
+                        //   color: AppColor.kWhite,
+                        //   colorText: AppColor.kText1,
+                        //   fontSize: width / 21.5,
+                        //   fontWeight: FontWeight.w600,
+                        // ),
                         // SizedBox(
                         //    height: 16.h,
                         //  ),

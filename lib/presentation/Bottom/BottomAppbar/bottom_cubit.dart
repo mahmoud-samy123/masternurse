@@ -22,6 +22,13 @@ class BottomCubit extends Cubit<int> {
     const ProfileView(),
   ];
 
+  final List<Widget> screensdoctor = [
+    const Placeholder(),
+    const Chat(),
+    // const Schedule(),
+    const ProfileView(),
+  ];
+
   String? currentPage;
   int? currentIndex;
   List<String> pageKeys = ['home', 'chat', 'booking', 'profile'];

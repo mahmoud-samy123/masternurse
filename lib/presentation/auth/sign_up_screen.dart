@@ -20,6 +20,7 @@ import '../../app/style/show_alert_dialog.dart';
 
 import '../../cubits/connection/connection_state.dart';
 import '../Bottom/bottom.dart';
+import '../Bottom/bottom_nav_docotor.dart';
 import 'auth_cubit/auth_cubit.dart';
 import 'auth_cubit/auth_states.dart';
 
@@ -77,7 +78,11 @@ class _SignUpState extends State<SignUp> {
                   builder: (context) {
                     return ShowAlertDialog(
                       onTap: () {
-                        pushNamedAndRemoveUntil(context, Bottombar.id);
+                        if (usertype == 'user') {
+                          Navigator.pushReplacementNamed(context, Bottombar.id);
+                        } else {
+                          Navigator.pushReplacementNamed(context, BottomNavDocotor.id);
+                        }
                       },
                       text1: S.of(context).welcome_back,
                       text2: S

@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:medical_app/const/shared_preferences.dart';
 import 'package:medical_app/cubits/connection/connection_cubit.dart';
+import 'package:medical_app/presentation/Bottom/bottom_nav_docotor.dart';
 import 'package:medical_app/presentation/localization/model/localization.dart';
 import 'package:medical_app/presentation/Body/Body_cubit/body_cubit.dart';
 import 'package:medical_app/presentation/Body/List%20of%20Body.dart';
@@ -138,6 +139,7 @@ class MyApp extends StatelessWidget {
               SignUp.id: (context) => const SignUp(),
               ForgotPasswordScreen.id: (context) =>
                   const ForgotPasswordScreen(),
+              BottomNavDocotor.id: (context) => BottomNavDocotor(), // <-- ADD THIS
               HomeScreen.id: (context) => const HomeScreen(),
               Chat.id: (context) => const Chat(),
               MessagesView.id: (context) => const MessagesView(),
