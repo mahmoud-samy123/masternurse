@@ -9,7 +9,7 @@ class Nurse {
   final String photo;
   final String? cityAr;
   final String cityEn;
-  final List<NurseService>? services;
+   List<NurseService>? services;
 
   Nurse({
     required this.id,

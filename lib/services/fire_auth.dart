@@ -16,13 +16,9 @@ class FireAuth {
       name: user.displayName ?? '',
       email: user.email ?? '',
       image: user.photoURL ?? '',
-      pushToken: '',
       about: "Hello I am using app",
-      time: DateTime.now().millisecondsSinceEpoch.toString(),
-      online: false,
-      lastActivated: DateTime.now().millisecondsSinceEpoch.toString(),
-      Mobilephone: user.phoneNumber?? '',
-      isDoctor: false,
+
+   phoneNumber: '', phone: '', userType: 'user',
     );
     await firebaseFireStore
         .collection(kUsersCollections)

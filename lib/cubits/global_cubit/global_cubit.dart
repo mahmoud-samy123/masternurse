@@ -29,7 +29,7 @@ class GlobalCubit extends Cubit<bool> {
         if (event.data() != null) {
 
           userModel = UserModel.fromJson(event.data()!);
-          if(userModel.isDoctor!){
+          if(userModel.userType=='nurse'){
             emit(true);
           }else{
             emit(false);

@@ -1,65 +1,45 @@
-
-
-
-import '../../../const/chat_const.dart';
-
 class UserModel {
-   String? id;
-   String? name;
-   String? email;
-   String? image;
-   String? pushToken;
-   String? about;
-   String? time;
-   bool? online;
-   String? lastActivated;
-   String? Mobilephone;
-   bool? isDoctor;
+  final String phoneNumber;
+  final String about;
+  final String email;
+  final String image;
+  final String name;
+  final String phone;
+  final String userType;
+
   UserModel({
-    required this.id,
-    required this.name,
+    required this.phoneNumber,
+    required this.about,
     required this.email,
     required this.image,
-    required this.pushToken,
-    required this.about,
-    required this.time,
-    required this.online,
-    required this.lastActivated,
-    required this.Mobilephone,
-    required this.isDoctor,
-
+    required this.name,
+    required this.phone,
+    required this.userType,
   });
 
+  // تحويل JSON إلى كائن Dart
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      id: json[kId] ?? '',
-      name : json[kName],
-      email : json[kEmail],
-      image : json[kImage],
-      pushToken : json[kToken],
-      about : json[kAbout],
-      time : json[kCreateAt].toString(),
-      online : json[kOnline],
-      lastActivated : json[kLastActivated].toString(),
-      Mobilephone : json[kPhone],
-      isDoctor : json[kIsDoctor],
-
+      phoneNumber: json['PhoneNumber'] ?? '',
+      about: json['about'] ?? '',
+      email: json['email'] ?? '',
+      image: json['image'] ?? '',
+      name: json['name'] ?? '',
+      phone: json['phone'] ?? '',
+      userType: json['userType'] ?? '',
     );
   }
-  Map<String, dynamic> toJson()
-  {
+
+  // تحويل كائن Dart إلى JSON
+  Map<String, dynamic> toJson() {
     return {
-      kId : id,
-      kName : name,
-      kEmail : email,
-      kImage : image,
-      kToken : pushToken,
-      kAbout : about,
-      kCreateAt : time,
-      kOnline : online,
-      kLastActivated : lastActivated,
-      kPhone:Mobilephone,
-      kIsDoctor : isDoctor??true,
+      'PhoneNumber': phoneNumber,
+      'about': about,
+      'email': email,
+      'image': image,
+      'name': name,
+      'phone': phone,
+      'userType': userType,
     };
   }
 }

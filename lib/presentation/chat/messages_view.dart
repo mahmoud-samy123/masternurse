@@ -31,7 +31,7 @@ class MessagesView extends StatefulWidget {
 class _MessagesViewState extends State<MessagesView> {
   void initState() {
     super.initState();
-  print('${  userModel!.name!} ${  userModel!.id!}  /////////OMAR');
+  print('${  userModel!.name!} ${  userModel!.name!}  /////////OMAR');
 
   }
 
@@ -62,8 +62,7 @@ class _MessagesViewState extends State<MessagesView> {
               backgroundColor: AppColor.kWhite,
               leading: CustomIconButton(
                 onPressed: () {
-                  pushNamed(context, Bottombar.id);
-                },
+Navigator.pop(context);                },
                 icon: const Icon(
                   Icons.arrow_back_ios_new,
                   color: AppColor.kText1,
@@ -245,7 +244,7 @@ class _MessagesViewState extends State<MessagesView> {
                                     onTap: () {
 
                                       FireChat().sendMessage(
-                                        userModel3.id!,
+                                        userModel!.name,
                                         'Hello 👋',
                                         chatModel.id.toString(),
                                       );
@@ -331,7 +330,7 @@ class _MessagesViewState extends State<MessagesView> {
                           if (cubit.msgController.text.isNotEmpty) {
                             FireChat()
                                 .sendMessage(
-                              userModel3.id!,
+                              userModel3.name,
                               cubit.msgController.text,
                               chatModel.id.toString(),
                             )

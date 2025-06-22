@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../chat/chat_view.dart';
 import '../../home/home.dart';
+import '../../home/home_nurse.dart';
 import '../../profile_user/profile_view.dart';
 
 
@@ -23,7 +24,7 @@ class BottomCubit extends Cubit<int> {
   ];
 
   final List<Widget> screensdoctor = [
-    const Placeholder(),
+    const HomeNurse(),
     const Chat(),
     // const Schedule(),
     const ProfileView(),
