@@ -1,4 +1,5 @@
 class UserModel {
+  final String id;
   final String phoneNumber;
   final String about;
   final String email;
@@ -8,6 +9,7 @@ class UserModel {
   final String userType;
 
   UserModel({
+    required this.id,
     required this.phoneNumber,
     required this.about,
     required this.email,
@@ -20,6 +22,7 @@ class UserModel {
   // تحويل JSON إلى كائن Dart
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
+      id: json['id'] ?? '',
       phoneNumber: json['PhoneNumber'] ?? '',
       about: json['about'] ?? '',
       email: json['email'] ?? '',
@@ -33,6 +36,7 @@ class UserModel {
   // تحويل كائن Dart إلى JSON
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'PhoneNumber': phoneNumber,
       'about': about,
       'email': email,
