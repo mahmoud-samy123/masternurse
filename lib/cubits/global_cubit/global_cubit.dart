@@ -21,22 +21,56 @@ class GlobalCubit extends Cubit<bool> {
   void getUserData() {
     try {
       myUserId = _firebaseAuth.currentUser!.uid;
+      
+      // First try to get data from nurse collection
       _controller = _firebaseFirestore
-          .collection(kUsersCollections)
+          .collection('nurse')
           .doc(myUserId)
           .snapshots()
           .listen((event) {
         if (event.data() != null) {
-
+          // User is a nurse
           userModel = UserModel.fromJson(event.data()!);
-          if(userModel.userType=='nurse'){
-            emit(true);
-          }else{
-            emit(false);
-          }
+          emit(true); // true means nurse
+        } else {
+          // If not found in nurse, try users collection
+          _firebaseFirestore
+              .collection(kUsersCollections)
+              .doc(myUserId)
+              .snapshots()
+              .listen((userEvent) {
+            if (userEvent.data() != null) {
+              userModel = UserModel.fromJson(userEvent.data()!);
+              if (userModel.userType == 'nurse') {
+                emit(true); // nurse
+              } else {
+                emit(false); // user
+              }
+            }
+          });
         }
       });
     } on Exception {
+      // If nurse collection fails, try users collection
+      try {
+        myUserId = _firebaseAuth.currentUser!.uid;
+        _controller = _firebaseFirestore
+            .collection(kUsersCollections)
+            .doc(myUserId)
+            .snapshots()
+            .listen((event) {
+          if (event.data() != null) {
+            userModel = UserModel.fromJson(event.data()!);
+            if (userModel.userType == 'nurse') {
+              emit(true); // nurse
+            } else {
+              emit(false); // user
+            }
+          }
+        });
+      } on Exception {
+        // Handle any remaining errors
+      }
     }
   }
 

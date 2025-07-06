@@ -8,6 +8,7 @@ import 'package:medical_app/const/shared_preferences.dart';
 import '../../../const/colors.dart';
 import '../../../const/navigations.dart';
 import '../Bottom/bottom.dart';
+import '../Bottom/bottom_nav_docotor.dart';
 import 'login_or_sign_up.dart';
 import 'onboarding_screen.dart';
 
@@ -32,10 +33,19 @@ class _SplashScreenState extends State<SplashScreen> {
         const Duration(
           seconds: 5,
         ), () {
-      pushNamed(
-        context,
-        isViewed != 0 ? Onboarding.id : FirebaseAuth.instance.currentUser == null? LoginOrSignUp.id : Bottombar.id,
-      );
+      if (isViewed != 0) {
+        pushNamed(context, Onboarding.id);
+      } else if (FirebaseAuth.instance.currentUser == null) {
+        pushNamed(context, LoginOrSignUp.id);
+      } else {
+        // Check userType from sharedPreferences
+        String? userType = sharedPreferences!.getString('userType');
+        if (userType == 'nurse') {
+          pushNamed(context, BottomNavDocotor.id);
+        } else {
+          pushNamed(context, Bottombar.id);
+        }
+      }
     });
     super.initState();
   }

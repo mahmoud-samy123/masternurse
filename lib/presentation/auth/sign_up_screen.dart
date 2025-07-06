@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medical_app/const/chat_const.dart';
 import 'package:medical_app/const/navigations.dart';
+import 'package:medical_app/const/shared_preferences.dart';
 
 import '../../../const/colors.dart';
 import '../../../cubits/connection/connection_cubit.dart';
@@ -73,6 +74,8 @@ class _SignUpState extends State<SignUp> {
         body: BlocConsumer<AuthCubit, AuthStates>(
           listener: (context, state) {
             if (state is SignUpSuccess) {
+              // Save userType to sharedPreferences
+              sharedPreferences?.setString('userType', usertype);
               showDialog(
                   context: context,
                   builder: (context) {

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medical_app/const/auth_const.dart';
 import 'package:medical_app/const/navigations.dart';
+import 'package:medical_app/const/shared_preferences.dart';
 
 import 'package:medical_app/presentation/auth/sign_up_screen.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
@@ -54,6 +55,8 @@ class _LoginState extends State<Login> {
           // );
           isLoading = true;
         } else if (state is LoginSuccess&&usertype == 'user' ) {
+          // Save userType to sharedPreferences
+          sharedPreferences?.setString('userType', 'user');
           showDialog(
             context: context,
             builder: (context) {
@@ -79,6 +82,8 @@ class _LoginState extends State<Login> {
           isLoading = false;
         }
         else if (state is LoginSuccess&&usertype == 'nurse' ) {
+          // Save userType to sharedPreferences
+          sharedPreferences?.setString('userType', 'nurse');
           showDialog(
             context: context,
             builder: (context) {
@@ -132,6 +137,8 @@ class _LoginState extends State<Login> {
                 );
               });
         } else if (state is GoogleLoginSuccess) {
+          // Save userType to sharedPreferences for Google login
+          sharedPreferences?.setString('userType', usertype);
           if (usertype == 'user') {
             Navigator.pushReplacementNamed(context, Bottombar.id);
           } else {
