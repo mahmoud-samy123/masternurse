@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -14,11 +13,11 @@ class FireChat {
   String msgId = const Uuid().v1();
   List<String>? members;
   var isDoctor;
-  Future createChat(String name) async
+  Future createChat(String email, {required String collection}) async
   {
     QuerySnapshot userData = await firebaseFireStore
-        .collection(kUsersCollections)
-        .where(kName, isEqualTo: name).get();
+        .collection(collection)
+        .where('email', isEqualTo: email).get();
 
     QuerySnapshot isDoctorr = await firebaseFireStore
         .collection(kUsersCollections)

@@ -8,7 +8,7 @@ import 'package:medical_app/cubits/connection/connection_cubit.dart';
 import 'package:medical_app/cubits/global_cubit/global_cubit.dart';
 import 'package:medical_app/presentation/chat/model/chat_model.dart';
 import 'package:medical_app/services/fire_chat.dart';
-
+import 'package:medical_app/const/shared_preferences.dart';
 
 import '../../app/style/custom_icon_button.dart';
 import '../../app/style/custom_list_view_chat.dart';
@@ -85,42 +85,32 @@ class _ChatState extends State<Chat> {
           ),
           Container(
             child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 10,
-                      horizontal: 10,
+              padding: const EdgeInsets.symmetric(
+                vertical: 10,
+                horizontal: 10,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  CustomSearch(
+                    controller: searchController,
+                  ),
+                  const Spacer(),
+                  CustomIconButton(
+                    onPressed: () {
+                      if (searchController.text != '') {
+                        _searchAndStartChat(searchController.text);
+                      }
+                    },
+                    icon: const Icon(
+                      Icons.check,
+                      color: AppColor.kPrimaryColor1,
+                      size: 40,
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        CustomSearch(
-                          controller: searchController,
-                        ),
-                        const Spacer(),
-                        CustomIconButton(
-                          onPressed: () {
-                            setState(() {
-                              FireChat().isDoctor;
-                            });
-                            if (searchController.text != '') {
-                              FireChat()
-                                  .createChat(searchController.text)
-                                  .then((value) {
-                                setState(() {
-                                  searchController.text = '';
-                                });
-                              });
-                            }
-                          },
-                          icon: const Icon(
-                            Icons.check,
-                            color: AppColor.kPrimaryColor1,
-                            size: 40,
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-
+                  ),
+                ],
+              ),
+            ),
           ),
           Expanded(
             child: BlocBuilder<InternetBloc, InternetState>(
@@ -180,5 +170,26 @@ class _ChatState extends State<Chat> {
         ],
       ),
     );
+  }
+
+  void _searchAndStartChat(String email) async {
+    String? userType = sharedPreferences?.getString('userType');
+    String collection = userType == 'nurse' ? 'users' : 'nurse';
+    final query = await FirebaseFirestore.instance
+        .collection(collection)
+        .where('email', isEqualTo: email.trim())
+        .get();
+    if (query.docs.isNotEmpty) {
+      await FireChat().createChat(email.trim(), collection: collection);
+      setState(() {
+        searchController.text = '';
+      });
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('لا يوجد مستخدم بهذا الإيميل')),
+        );
+      }
+    }
   }
 }

@@ -38,7 +38,7 @@ class HomeCubit extends Cubit<HomeState> {
     try {
       emit(TopdoctorHomeloading());
 
-      final String uid = "10mgNyk4nQnf1QjijO9J";
+      final String uid = FirebaseAuth.instance.currentUser!.uid;
 
       if (uid.isEmpty) {
         emit(TopdoctorHomeError(error: "User not authenticated."));
@@ -63,7 +63,7 @@ class HomeCubit extends Cubit<HomeState> {
     try {
       await FirebaseFirestore.instance
           .collection('nurse')
-          .doc("10mgNyk4nQnf1QjijO9J")
+          .doc(FirebaseAuth.instance.currentUser!.uid)
           .update({
         'services': nurse.services?.map((s) => s.toJson()).toList(),
       });

@@ -1,4 +1,3 @@
-
 import 'package:medical_app/presentation/home/model/service.dart';
 
 class Nurse {
@@ -9,7 +8,8 @@ class Nurse {
   final String photo;
   final String? cityAr;
   final String cityEn;
-   List<NurseService>? services;
+  final String email;
+  List<NurseService>? services;
 
   Nurse({
     required this.id,
@@ -19,11 +19,12 @@ class Nurse {
     required this.photo,
     required this.cityAr,
     required this.cityEn,
+    required this.email,
     required this.services,
   });
 
   factory Nurse.fromJson(Map<String, dynamic> json) {
-    var servicesFromJson = json['services'] as List<dynamic>;
+    var servicesFromJson = json['services'] as List<dynamic>? ?? [];
     List<NurseService> serviceList = servicesFromJson
         .map((serviceJson) => NurseService.fromJson(serviceJson))
         .toList();
@@ -36,7 +37,8 @@ class Nurse {
       photo: json['photo']??"https://cdn.ebaumsworld.com/mediaFiles/picture/718392/86486235.jpg",
       cityAr: json['city_ar'],
       cityEn: json['city_en'],
-      services: serviceList??[],
+      email: json['email'] ?? '',
+      services: serviceList,
     );
   }
 
@@ -49,6 +51,7 @@ class Nurse {
       'photo': photo,
       'city_ar': cityAr,
       'city_en': cityEn,
+      'email': email,
       'services': services!.map((s) => s.toJson()).toList(),
     };
   }
