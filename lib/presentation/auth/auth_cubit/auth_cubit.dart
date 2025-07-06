@@ -87,6 +87,7 @@ class AuthCubit extends Cubit<AuthStates> {
           "services":[],
           kImage: '',
           'userType': userType,
+          'email':email,
           kAbout : about,
         });
         await FirebaseFirestore.instance
