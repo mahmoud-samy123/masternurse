@@ -28,6 +28,7 @@ class Chat extends StatefulWidget {
 
 class _ChatState extends State<Chat> {
   bool isVisible = false;
+  TextEditingController searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +64,9 @@ class _ChatState extends State<Chat> {
                       onPressed: () {
                         setState(() {
                           isVisible = !isVisible;
+                          if (!isVisible) {
+                            searchController.clear();
+                          }
                         });
                       },
                       icon: isVisible
@@ -83,35 +87,36 @@ class _ChatState extends State<Chat> {
               ),
             ],
           ),
-          Container(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 10,
-                horizontal: 10,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  CustomSearch(
-                    controller: searchController,
-                  ),
-                  const Spacer(),
-                  CustomIconButton(
-                    onPressed: () {
-                      if (searchController.text != '') {
-                        _searchAndStartChat(searchController.text);
-                      }
-                    },
-                    icon: const Icon(
-                      Icons.check,
-                      color: AppColor.kPrimaryColor1,
-                      size: 40,
+          if (isVisible)
+            Container(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 10,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    CustomSearch(
+                      controller: searchController,
                     ),
-                  ),
-                ],
+                    const Spacer(),
+                    CustomIconButton(
+                      onPressed: () {
+                        if (searchController.text != '') {
+                          _searchAndStartChat(searchController.text);
+                        }
+                      },
+                      icon: const Icon(
+                        Icons.check,
+                        color: AppColor.kPrimaryColor1,
+                        size: 40,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
           Expanded(
             child: BlocBuilder<InternetBloc, InternetState>(
               builder: (context, connectState) {
@@ -127,6 +132,18 @@ class _ChatState extends State<Chat> {
                             .map((e) => ChatModel.fromJson(e.data()))
                             .toList()
                           ..sort((a, b) => b.lastMessageTime!.compareTo(a.lastMessageTime!));
+
+                        // Filter items if search is active
+                        if (isVisible && searchController.text.isNotEmpty) {
+                          items = items.where((chat) {
+                            // Search in the other member's name or email
+                            String otherMemberId = chat.members!.firstWhere(
+                              (member) => member != FirebaseAuth.instance.currentUser!.uid,
+                            );
+                            // You might need to fetch user details here for proper search
+                            return chat.id?.toLowerCase().contains(searchController.text.toLowerCase()) ?? false;
+                          }).toList();
+                        }
 
                         return ListView.builder(
                           itemCount: items.length,
@@ -183,6 +200,7 @@ class _ChatState extends State<Chat> {
       await FireChat().createChat(email.trim(), collection: collection);
       setState(() {
         searchController.text = '';
+        isVisible = false;
       });
     } else {
       if (mounted) {
