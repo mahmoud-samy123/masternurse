@@ -36,13 +36,11 @@ class _ChatState extends State<Chat> {
     final width = MediaQuery.of(context).size.width;
     final userModel =
         BlocProvider.of<GlobalCubit>(context, listen: true).userModel;
-    //   843.4285714285714
-    //   411.42857142857144
     return Padding(
       padding: EdgeInsets.only(
-        top: height * 0.07113821138211382,
-        left: width * 0.048611111111,
-        right: width * 0.048611111111,
+        top: height * 0.04,
+        left: width * 0.05,
+        right: width * 0.05,
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -51,70 +49,56 @@ class _ChatState extends State<Chat> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               CustomText(
-                text: 'Chat',
+                text: 'المحادثات',
                 colorText: AppColor.kText1,
-                fontSize: width * 0.058333333,
-                fontWeight: FontWeight.w600,
+                fontSize: width * 0.06,
+                fontWeight: FontWeight.w700,
               ),
               const Spacer(),
-              BlocBuilder<GlobalCubit, bool>(
-                builder: (context, state) {
-                  if(state){
-                    return CustomIconButton(
-                      onPressed: () {
-                        setState(() {
-                          isVisible = !isVisible;
-                          if (!isVisible) {
-                            searchController.clear();
-                          }
-                        });
-                      },
-                      icon: isVisible
-                          ? const Icon(
+              CustomIconButton(
+                onPressed: () {
+                  setState(() {
+                    isVisible = !isVisible;
+                    if (!isVisible) {
+                      searchController.clear();
+                    }
+                  });
+                },
+                icon: isVisible
+                    ? const Icon(
                         Icons.close_rounded,
                         size: 30,
                       )
-                          : const Icon(
+                    : const Icon(
                         Icons.search_rounded,
                         size: 30,
                       ),
-                    );
-                  }else{
-                    return const SizedBox.shrink();
-                  }
-
-                },
               ),
             ],
           ),
           if (isVisible)
             Container(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 10,
-                  horizontal: 10,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    CustomSearch(
+              margin: const EdgeInsets.symmetric(vertical: 10),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: CustomSearch(
                       controller: searchController,
                     ),
-                    const Spacer(),
-                    CustomIconButton(
-                      onPressed: () {
-                        if (searchController.text != '') {
-                          _searchAndStartChat(searchController.text);
-                        }
-                      },
-                      icon: const Icon(
-                        Icons.check,
-                        color: AppColor.kPrimaryColor1,
-                        size: 40,
-                      ),
+                  ),
+                  CustomIconButton(
+                    onPressed: () {
+                      if (searchController.text.isNotEmpty) {
+                        _searchAndStartChat(searchController.text);
+                      }
+                    },
+                    icon: const Icon(
+                      Icons.check,
+                      color: AppColor.kPrimaryColor1,
+                      size: 32,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           Expanded(
@@ -127,45 +111,43 @@ class _ChatState extends State<Chat> {
                         .where(kMembers, arrayContains: FirebaseAuth.instance.currentUser!.uid)
                         .snapshots(),
                     builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        List<ChatModel> items = snapshot.data!.docs
-                            .map((e) => ChatModel.fromJson(e.data()))
-                            .toList()
-                          ..sort((a, b) => b.lastMessageTime!.compareTo(a.lastMessageTime!));
-
-                        // Filter items if search is active
-                        if (isVisible && searchController.text.isNotEmpty) {
-                          items = items.where((chat) {
-                            // Search in the other member's name or email
-                            String otherMemberId = chat.members!.firstWhere(
-                              (member) => member != FirebaseAuth.instance.currentUser!.uid,
-                            );
-                            // You might need to fetch user details here for proper search
-                            return chat.id?.toLowerCase().contains(searchController.text.toLowerCase()) ?? false;
-                          }).toList();
-                        }
-
-                        return ListView.builder(
-                          itemCount: items.length,
-                          itemBuilder: (context, index) {
-                            return CustomListViewChat(
-                              chatModel: items[index],
-                            );
-                          },
-                        );
-                      } else {
-                        return const Center(
-                          child: CircularProgressIndicator(
-                            color: AppColor.kPrimaryColor1,
-                          ),
-                        );
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator(color: AppColor.kPrimaryColor1));
                       }
+                      if (snapshot.hasError) {
+                        return const Center(child: Text('حدث خطأ أثناء تحميل المحادثات'));
+                      }
+                      if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                        return const Center(child: Text('لا توجد محادثات بعد. ابدأ محادثة جديدة!'));
+                      }
+                      List<ChatModel> items = snapshot.data!.docs
+                          .map((e) => ChatModel.fromJson(e.data()))
+                          .toList()
+                        ..sort((a, b) => b.lastMessageTime!.compareTo(a.lastMessageTime!));
+                      // فلترة البحث
+                      if (isVisible && searchController.text.isNotEmpty) {
+                        items = items.where((chat) {
+                          return chat.id?.toLowerCase().contains(searchController.text.toLowerCase()) ?? false;
+                        }).toList();
+                        if (items.isEmpty) {
+                          return const Center(child: Text('لا توجد نتائج مطابقة للبحث.'));
+                        }
+                      }
+                      return ListView.separated(
+                        itemCount: items.length,
+                        separatorBuilder: (context, index) => const Divider(height: 1),
+                        itemBuilder: (context, index) {
+                          return CustomListViewChat(
+                            chatModel: items[index],
+                          );
+                        },
+                      );
                     },
                   );
                 } else if (connectState is InternetDisconnectedState) {
                   return const Center(
                     child: CustomText(
-                      text: "Internet Not Connected",
+                      text: "لا يوجد اتصال بالإنترنت",
                       colorText: Colors.red,
                       fontWeight: FontWeight.w600,
                       fontSize: 17,
@@ -174,7 +156,7 @@ class _ChatState extends State<Chat> {
                 } else {
                   return const Center(
                     child: CustomText(
-                      text: "Checking connection...",
+                      text: "جاري التحقق من الاتصال...",
                       colorText: Colors.grey,
                       fontWeight: FontWeight.w600,
                       fontSize: 17,
